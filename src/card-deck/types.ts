@@ -2,11 +2,17 @@ export type CardId = string;
 
 export type CardCategory = "communication" | "education" | "consent" | "intimacy" | "wellness";
 
+export type GenericFace =
+  | { type: "image"; src: string; alt?: string }
+  | { type: "html"; html: string };
+
 export type WellnessCard = {
-  id: CardId;
+  id: string;
   title: string;
-  description: string; // short educational/prompt text (non-explicit)
-  category?: CardCategory;
+  description: string;
+  category?: string;
   adultOnly?: boolean;
   tags?: string[];
+  genericFace?: GenericFace | string | null;
 };
+
