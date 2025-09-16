@@ -1,44 +1,62 @@
-import { WellnessCard } from "./types";
+// src/card-deck/sampleCards.ts
+import type { GenericCard } from "./types";
 
-export const SAMPLE_CARDS: WellnessCard[] = [
+export const SAMPLE_CARDS: GenericCard[] = [
   {
     id: "c1",
-    title: "Talk About Boundaries",
-    description: "Share one boundary you value in intimate settings. Listen respectfully.",
-    category: "consent",
-    adultOnly: false,
-    tags: ["boundaries", "communication"]
+    title: "Question",
+    body: "What is one hobby you’d like to try?",
+    tags: ["conversation"],
+    genericFace: {
+      kind: "media",
+      media: { type: "image", src: "https://picsum.photos/400/240?random=1", alt: "random image" },
+    },
   },
   {
     id: "c2",
-    title: "Favorite Comfort Ritual",
-    description: "Describe a simple ritual that helps you feel relaxed and connected.",
-    category: "wellness",
-    adultOnly: false,
-    tags: ["comfort", "routine"]
+    title: "Challenge",
+    body: "Do 5 pushups now!",
+    tags: ["fun"],
+    genericFace: {
+      kind: "media",
+      media: { type: "gif", src: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif", alt: "pushups gif" },
+    },
   },
   {
     id: "c3",
-    title: "Consent Check",
-    description: "Practice a short explicit consent phrase you both agree on.",
-    category: "consent",
-    adultOnly: false,
-    tags: ["consent", "phrases"]
+    title: "Prompt",
+    body: "Share a funny school memory.",
+    tags: ["memory"],
+    genericFace: {
+      kind: "gif", // explicit gif branch
+      media: { type: "gif", src: "https://media.giphy.com/media/26FPOztY0CYf2gSOw/giphy.gif", alt: "funny gif" },
+    },
   },
   {
     id: "c4",
-    title: "Communication Icebreaker",
-    description: "Name something that makes you feel appreciated; why does it matter?",
-    category: "communication",
-    adultOnly: false,
-    tags: ["gratitude"]
+    title: "Tip",
+    body: "Take a deep breath.",
+    tags: ["wellness"],
+    genericFace: {
+      kind: "html",
+      html: `<div style="text-align:center"><h3>Relax</h3><p>Breathe in 4-4-8</p></div>`,
+    },
   },
   {
     id: "c5",
-    title: "Healthy Myth Busting",
-    description: "Name a common sexual wellness myth you’ve heard and whether you think it’s true.",
-    category: "education",
-    adultOnly: false,
-    tags: ["myth", "facts"]
-  }
+    title: "Video",
+    body: "Watch this flower bloom.",
+    tags: ["calm"],
+    genericFace: {
+      kind: "media",
+      media: { type: "video", src: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", alt: "flower video" },
+    },
+  },
+  {
+    id: "c6",
+    title: "Wildcard",
+    body: "Invent a new rule for the game.",
+    tags: ["wild"],
+    genericFace: { kind: "none" },
+  },
 ];

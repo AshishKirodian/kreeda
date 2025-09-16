@@ -35,5 +35,8 @@
     "card",
     "sexual-wellness"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "dompurify": "^3.2.6"
+  }
 }

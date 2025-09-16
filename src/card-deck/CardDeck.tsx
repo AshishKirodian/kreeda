@@ -1,27 +1,39 @@
+// src/card-deck/CardDeck.tsx
 import React from "react";
+import type { GenericCard } from "./types";
 import { useCardDeck } from "./useCardDeck";
-import { SAMPLE_CARDS } from "./sampleCards";
-import { Card } from "./Card";
+import Card from "./Card";
 
-/**
- * Minimal demo component:
- * - initialCards?: defaults to SAMPLE_CARDS
- * - includeAdult?: boolean
- */
-export const CardDeck: React.FC<{ initialCards?: any; includeAdult?: boolean }> = ({
-  initialCards = SAMPLE_CARDS,
-  includeAdult = false
-}) => {
+export const CardDeck: React.FC<{
+  initialCards?: GenericCard[];
+  includeSensitive?: boolean;
+  onPenalty?: (revealed: GenericCard) => void | Promise<GenericCard | null | undefined>;
+}> = ({ initialCards = [], includeSensitive = false, onPenalty }) => {
   const {
     deck,
     top,
-    history,
+    revealed,
     draw,
+    accept,
+    penalty,
+    peek,
+    history,
     discardTop,
     shuffle,
     reset,
-    peek
-  } = useCardDeck(initialCards, { includeAdult });
+  } = useCardDeck(initialCards, { includeSensitive });
+
+  const handleDraw = () => {
+    draw();
+  };
+
+  const handleAccept = () => {
+    accept();
+  };
+
+  const handlePenalty = async () => {
+    await penalty(onPenalty);
+  };
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif" }}>
@@ -33,32 +45,50 @@ export const CardDeck: React.FC<{ initialCards?: any; includeAdult?: boolean }> 
       <div style={{ display: "flex", gap: 16 }}>
         <div>
           <h4>Top of deck</h4>
-          {top ? <Card card={top} onReveal={() => draw()} /> : <div>No cards left</div>}
+          {top ? (
+            // Show generic face by default: we want users to see generic side initially (so we show a card with title/body blank)
+            <Card card={{ ...top, title: "", subtitle: "", body: "" }} />
+          ) : (
+            <div>No cards left</div>
+          )}
           <div style={{ marginTop: 8 }}>
-            <button onClick={() => draw()} type="button">Draw</button>
-            <button onClick={() => discardTop()} type="button" style={{ marginLeft: 8 }}>Discard</button>
+            <button onClick={handleDraw}>Draw</button>
+            <button onClick={() => discardTop()} style={{ marginLeft: 8 }}>Discard</button>
           </div>
+        </div>
+
+        <div>
+          <h4>Revealed</h4>
+          {revealed ? (
+            <>
+              <Card card={revealed} />
+              <div style={{ marginTop: 8 }}>
+                <button onClick={handleAccept}>Accept</button>
+                <button onClick={handlePenalty} style={{ marginLeft: 8 }}>Penalty</button>
+              </div>
+            </>
+          ) : (
+            <div>No revealed card</div>
+          )}
         </div>
 
         <div>
           <h4>Peek (next 3)</h4>
           <div style={{ display: "grid", gap: 8 }}>
-            {peek(3).map((c:any) => (
+            {peek(3).map((c) => (
               <div key={c.id} style={{ border: "1px dashed #ccc", padding: 8, borderRadius: 6 }}>
-                <strong>{c.title}</strong>
-                <div style={{ fontSize: 12, color: "#666" }}>{c.category}</div>
+                <strong>{c.title ?? "—"}</strong>
+                <div style={{ fontSize: 12, color: "#666" }}>{c.subtitle ?? ""}</div>
               </div>
             ))}
           </div>
-        </div>
 
-        <div>
-          <h4>History</h4>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {history.map((h:any) => (
-              <div key={h.id} style={{ borderBottom: "1px solid #eee", paddingBottom: 6 }}>
-                <strong>{h.title}</strong>
-                <div style={{ fontSize: 12 }}>{h.description}</div>
+          <h4 style={{ marginTop: 16 }}>History</h4>
+          <div style={{ maxHeight: 220, overflow: "auto", fontSize: 13 }}>
+            {history.map((h, i) => (
+              <div key={i} style={{ borderBottom: "1px solid #eee", paddingBottom: 6, marginBottom: 6 }}>
+                <div style={{ color: "#444" }}>{h.action}</div>
+                <div style={{ color: "#999", fontSize: 11 }}>{h.ts}</div>
               </div>
             ))}
           </div>
