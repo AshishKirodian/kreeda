@@ -1,7 +1,7 @@
 {
   "name": "kreeda",
   "version": "0.1.0",
-  "description": "Kreeda: a small React card-deck library for sexual-wellness prompts (logic-first).",
+  "description": "Kreeda: a small React game library",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,8 @@
     "clean": "rm -rf dist",
     "prepare": "npm run build",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "release": "bash ./scripts/release.sh"
   },
   "peerDependencies": {
     "react": ">=18",
