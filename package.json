@@ -1,0 +1,38 @@
+{
+  "name": "kreeda",
+  "version": "0.1.0",
+  "description": "Kreeda: a small React card-deck library for sexual-wellness prompts (logic-first).",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --outDir dist && node ./scripts/esm-cjs.js",
+    "clean": "rm -rf dist",
+    "prepare": "npm run build",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@storybook/addon-docs": "^9.1.6",
+    "@storybook/react-vite": "^9.1.6",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "storybook": "^9.1.6",
+    "typescript": "^5.9.2"
+  },
+  "keywords": [
+    "kreeda",
+    "react",
+    "game",
+    "card",
+    "sexual-wellness"
+  ],
+  "license": "MIT"
+}

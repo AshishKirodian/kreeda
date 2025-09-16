@@ -1,0 +1,43 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+storybook-static/
+coverage/
+
+# Storybook cache
+.storybook-out/
+node_modules/.cache/
+.storybook/.cache/
+
+# VSCode / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Optional: exclude logs
+*.log
+
+# Optional: exclude test snapshots (if generated elsewhere)
+*.snap
+
+# Optional: exclude build artifacts from GH Pages
+gh-pages/
