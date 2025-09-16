@@ -1,0 +1,1 @@
+import{S as a,C as e}from"./sampleCards-CWv9gvoz.js";import"./jsx-runtime-D_zvdyIk.js";const s={title:"CardDeck/Card",component:e,args:{card:a[0]}},r={};r.parameters={...r.parameters,docs:{...r.parameters?.docs,source:{originalSource:"{}",...r.parameters?.docs?.source}}};const c=["Default"];export{r as Default,c as __namedExportsOrder,s as default};
