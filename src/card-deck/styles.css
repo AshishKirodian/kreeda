@@ -1,12 +1,12 @@
 /* src/card-deck/styles.css
-   Improved layout: fix image overflow, aspect boxes, responsive deck grid.
-   Keep your design tokens and variables as before.
+   Improved tokens and utilities: media containment, focus-ring, safer small-screen handling.
 */
 
 :root {
   --kreeda-font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   --kreeda-bg: #ffffff;
   --kreeda-surface: #ffffff;
+  --kreeda-text: #0f1724;
   --kreeda-muted: #6b7280;
   --kreeda-primary: #ff5a5f;
   --kreeda-primary-contrast: #ffffff;
@@ -20,121 +20,76 @@
   --kreeda-breakpoint-md: 840px;
 }
 
-/* container root */
-.kreeda-root { font-family: var(--kreeda-font-family); color: #0f1724; }
+/* root */
+.kreeda-root { font-family: var(--kreeda-font-family); color: var(--kreeda-text); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
-/* card wrapper and inner */
+/* card */
 .kreeda-card { width: 100%; max-width: var(--kreeda-card-width); perspective: 1000px; box-sizing: border-box; }
 .kreeda-card-inner { position: relative; cursor: pointer; transform-style: preserve-3d; transition: transform 320ms cubic-bezier(.22,.9,.45,1); }
 
-/* face base */
-.kreeda-card-face {
-  backface-visibility: hidden; -webkit-backface-visibility: hidden;
-  border-radius: var(--kreeda-radius);
-  padding: var(--kreeda-padding);
-  background: var(--kreeda-surface);
-  border: 1px solid var(--kreeda-border);
-  box-shadow: var(--kreeda-elev);
-  box-sizing: border-box;
-  min-height: 150px;
-  overflow: hidden; /* important: prevents content spill */
-}
-
-/* front */
+/* faces */
+.kreeda-card-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: var(--kreeda-radius); padding: var(--kreeda-padding); background: var(--kreeda-surface); border: 1px solid var(--kreeda-border); box-shadow: var(--kreeda-elev); box-sizing: border-box; min-height: 150px; overflow: hidden; }
 .kreeda-card-front { position: relative; z-index: 2; }
+.kreeda-card-back { position: absolute; inset: 0; transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; padding: var(--kreeda-padding); gap: 12px; }
 
-/* back: place media inside a constrained container */
-.kreeda-card-back {
-  position: absolute; inset: 0; transform: rotateY(180deg);
-  display: flex; align-items: center; justify-content: center;
-  padding: var(--kreeda-padding);
-  gap: 12px;
-}
+/* media wrapper - use min() to limit height better on short viewports */
+.kreeda-media-wrap { width: 100%; max-height: min(48vh, 420px); border-radius: calc(var(--kreeda-radius) - 4px); overflow: hidden; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #fff, #fbfbfb); }
 
-/* media wrapper: keeps media contained and crops elegantly */
-.kreeda-media-wrap {
-  width: 100%;
-  max-height: calc(48vh);
-  border-radius: calc(var(--kreeda-radius) - 4px);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(180deg, #fff, #fbfbfb);
-}
-
-/* helpful aspect boxes (preferred) */
 .kreeda-aspect-16x9 { aspect-ratio: 16 / 9; width: 100%; }
 .kreeda-aspect-4x3 { aspect-ratio: 4 / 3; width: 100%; }
 .kreeda-aspect-square { aspect-ratio: 1 / 1; width: 100%; }
 
-/* an img or video that's cropped; choose cover for photography */
-.kreeda-media {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover; /* crop, avoids spill */
-  object-position: center;
-}
+/* default media: cover (prevents spillover). Consumers can set contain via utility.
+   Add both classes on element when you need to override. */
+.kreeda-media { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center; }
 
-/* for gifs you may prefer contain (so animation not cropped) -
-   stories or renderers can wrap <img class="kreeda-media kreeda-media-contain" ...> to override */
+/* helper: contain variant (no cropping) */
 .kreeda-media.kreeda-media-contain { object-fit: contain; }
 
-/* video controls styling */
-.kreeda-media video { width: 100%; height: 100%; object-fit: contain; }
+/* video specific */
+.kreeda-media video, .kreeda-media video { width: 100%; height: 100%; object-fit: contain; }
 
-/* html face container */
-.kreeda-html-face { width: 100%; }
-
-/* title/body/meta */
-.kreeda-card-title { font-size: 16px; font-weight: 600; margin: 0; color: #0f1724; }
+/* content */
+.kreeda-card-title { font-size: 16px; font-weight: 600; margin: 0; color: var(--kreeda-text); }
 .kreeda-card-subtitle { font-size: 13px; color: var(--kreeda-muted); margin-top: 6px; }
 .kreeda-card-body { margin-top: 10px; line-height: 1.45; color: #111827; }
 
-/* meta + button row */
+/* meta + actions */
 .kreeda-card-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
 .kreeda-tag { background: rgba(0,0,0,0.04); padding: 6px 8px; border-radius: 999px; font-size: 12px; color: var(--kreeda-muted); }
-.kreeda-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: none; background: var(--kreeda-primary); color: var(--kreeda-primary-contrast); font-weight: 600; cursor: pointer; }
+
+.kreeda-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 999px; border: none; background: var(--kreeda-primary); color: var(--kreeda-primary-contrast); font-weight: 600; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
 .kreeda-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-/* deck grid for storybook / demos */
-.kreeda-deck-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-  align-items: start;
+/* focus-visible ring for keyboard users */
+.kreeda-btn:focus-visible,
+.kreeda-card:focus-visible,
+.kreeda-card-inner:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255,90,95,0.12);
+  border-radius: calc(var(--kreeda-radius) + 2px);
 }
+
+/* deck demo grid */
+.kreeda-deck-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; align-items: start; }
 
 /* sensitive badge */
-.kreeda-badge-sensitive {
-  background: rgba(255,90,95,0.08);
-  color: var(--kreeda-primary);
-  padding: 6px 8px;
-  font-size: 12px;
-  border-radius: 999px;
-  display: inline-block;
-}
+.kreeda-badge-sensitive { background: rgba(255,90,95,0.08); color: var(--kreeda-primary); padding: 6px 8px; font-size: 12px; border-radius: 999px; display: inline-block; }
 
-/* helpful small text */
+/* small */
 .kreeda-small { font-size: 12px; color: var(--kreeda-muted); }
 
 /* responsive adjustments */
 @media (max-width: 520px) {
   :root { --kreeda-card-width: 92%; --kreeda-padding: 12px; }
   .kreeda-card-face { min-height: 120px; }
-  .kreeda-media-wrap { max-height: 40vh; }
+  .kreeda-media-wrap { max-height: min(40vh, 360px); }
 }
+@media (min-width: 521px) and (max-width: 840px) { :root { --kreeda-card-width: 360px; } }
+@media (orientation: landscape) and (max-height: 420px) { .kreeda-card { max-width: 420px; } .kreeda-media-wrap { max-height: 36vh; } }
 
-@media (min-width: 521px) and (max-width: 840px) {
-  :root { --kreeda-card-width: 360px; }
-}
-
-/* orientation small screens */
-@media (orientation: landscape) and (max-height: 420px) {
-  .kreeda-card { max-width: 420px; }
-  .kreeda-media-wrap { max-height: 36vh; }
-}
-
-/* reduced motion respect */
+/* reduced motion */
 @media (prefers-reduced-motion: reduce) { .kreeda-card-inner { transition: none !important; } }
+
+/* theme helper class (consumer can use .kreeda-theme--muted on root) */
+.kreeda-theme--muted { --kreeda-primary: #2b8a3e; --kreeda-surface: #fbfbfb; }
