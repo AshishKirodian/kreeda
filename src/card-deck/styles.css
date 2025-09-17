@@ -1,16 +1,14 @@
 /* src/card-deck/styles.css
-   Minimal, Airbnb-inspired visual system.
-   Consumers can override using CSS variables or by scoping to a theme class.
+   Improved layout: fix image overflow, aspect boxes, responsive deck grid.
+   Keep your design tokens and variables as before.
 */
 
-/* --- design tokens (defaults) --- */
 :root {
-  --kreeda-font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial;
+  --kreeda-font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   --kreeda-bg: #ffffff;
   --kreeda-surface: #ffffff;
-  --kreeda-muted: #6b7280;           /* subtle text */
-  --kreeda-primary: #ff5a5f;         /* Airbnb-ish accent */
+  --kreeda-muted: #6b7280;
+  --kreeda-primary: #ff5a5f;
   --kreeda-primary-contrast: #ffffff;
   --kreeda-border: rgba(16,24,40,0.06);
   --kreeda-radius: 12px;
@@ -22,38 +20,16 @@
   --kreeda-breakpoint-md: 840px;
 }
 
-/* Theme hook for consumers:
-   .kreeda-theme--dark { --kreeda-bg: #0f1724; --kreeda-surface:#0b1220; ... }
-*/
+/* container root */
+.kreeda-root { font-family: var(--kreeda-font-family); color: #0f1724; }
 
-/* --- base layout --- */
-.kreeda-root {
-  font-family: var(--kreeda-font-family);
-  color: #0f1724;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* card wrapper and inner */
+.kreeda-card { width: 100%; max-width: var(--kreeda-card-width); perspective: 1000px; box-sizing: border-box; }
+.kreeda-card-inner { position: relative; cursor: pointer; transform-style: preserve-3d; transition: transform 320ms cubic-bezier(.22,.9,.45,1); }
 
-/* Card wrapper */
-.kreeda-card {
-  width: 100%;
-  max-width: var(--kreeda-card-width);
-  perspective: 1000px;
-  box-sizing: border-box;
-}
-
-/* inner flipper */
-.kreeda-card-inner {
-  position: relative;
-  cursor: pointer;
-  transform-style: preserve-3d;
-  transition: transform 320ms cubic-bezier(.22,.9,.45,1);
-}
-
-/* face common */
+/* face base */
 .kreeda-card-face {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
   border-radius: var(--kreeda-radius);
   padding: var(--kreeda-padding);
   background: var(--kreeda-surface);
@@ -61,136 +37,104 @@
   box-shadow: var(--kreeda-elev);
   box-sizing: border-box;
   min-height: 150px;
+  overflow: hidden; /* important: prevents content spill */
 }
 
-/* front & back specific */
-.kreeda-card-front {
-  position: relative;
-  z-index: 2;
-}
+/* front */
+.kreeda-card-front { position: relative; z-index: 2; }
 
+/* back: place media inside a constrained container */
 .kreeda-card-back {
-  position: absolute;
-  inset: 0;
-  transform: rotateY(180deg);
+  position: absolute; inset: 0; transform: rotateY(180deg);
+  display: flex; align-items: center; justify-content: center;
+  padding: var(--kreeda-padding);
+  gap: 12px;
+}
+
+/* media wrapper: keeps media contained and crops elegantly */
+.kreeda-media-wrap {
+  width: 100%;
+  max-height: calc(48vh);
+  border-radius: calc(var(--kreeda-radius) - 4px);
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: auto;
+  background: linear-gradient(180deg, #fff, #fbfbfb);
 }
 
-/* text layout */
-.kreeda-card-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0;
-  color: #0f1724;
-}
+/* helpful aspect boxes (preferred) */
+.kreeda-aspect-16x9 { aspect-ratio: 16 / 9; width: 100%; }
+.kreeda-aspect-4x3 { aspect-ratio: 4 / 3; width: 100%; }
+.kreeda-aspect-square { aspect-ratio: 1 / 1; width: 100%; }
 
-.kreeda-card-subtitle {
-  font-size: 13px;
-  color: var(--kreeda-muted);
-  margin-top: 6px;
-}
-
-.kreeda-card-body {
-  margin-top: 10px;
-  line-height: 1.45;
-  color: #111827;
-}
-
-/* small metadata row */
-.kreeda-card-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 12px;
-}
-
-/* subtle pill / tags */
-.kreeda-tag {
-  background: rgba(0,0,0,0.04);
-  padding: 6px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  color: var(--kreeda-muted);
-}
-
-/* action button (rounded primary) */
-.kreeda-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: none;
-  background: var(--kreeda-primary);
-  color: var(--kreeda-primary-contrast);
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
-.kreeda-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* generic face media */
+/* an img or video that's cropped; choose cover for photography */
 .kreeda-media {
-  max-width: 100%;
-  max-height: 48vh;
+  width: 100%;
+  height: 100%;
   display: block;
-  border-radius: calc(var(--kreeda-radius) - 4px);
-  object-fit: contain;
+  object-fit: cover; /* crop, avoids spill */
+  object-position: center;
 }
+
+/* for gifs you may prefer contain (so animation not cropped) -
+   stories or renderers can wrap <img class="kreeda-media kreeda-media-contain" ...> to override */
+.kreeda-media.kreeda-media-contain { object-fit: contain; }
+
+/* video controls styling */
+.kreeda-media video { width: 100%; height: 100%; object-fit: contain; }
 
 /* html face container */
-.kreeda-html-face {
-  width: 100%;
+.kreeda-html-face { width: 100%; }
+
+/* title/body/meta */
+.kreeda-card-title { font-size: 16px; font-weight: 600; margin: 0; color: #0f1724; }
+.kreeda-card-subtitle { font-size: 13px; color: var(--kreeda-muted); margin-top: 6px; }
+.kreeda-card-body { margin-top: 10px; line-height: 1.45; color: #111827; }
+
+/* meta + button row */
+.kreeda-card-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+.kreeda-tag { background: rgba(0,0,0,0.04); padding: 6px 8px; border-radius: 999px; font-size: 12px; color: var(--kreeda-muted); }
+.kreeda-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: none; background: var(--kreeda-primary); color: var(--kreeda-primary-contrast); font-weight: 600; cursor: pointer; }
+.kreeda-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* deck grid for storybook / demos */
+.kreeda-deck-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  align-items: start;
 }
 
-/* spacing helpers */
-.kreeda-row { display:flex; gap:12px; align-items:center; }
-.kreeda-column { display:flex; flex-direction:column; gap:8px; }
+/* sensitive badge */
+.kreeda-badge-sensitive {
+  background: rgba(255,90,95,0.08);
+  color: var(--kreeda-primary);
+  padding: 6px 8px;
+  font-size: 12px;
+  border-radius: 999px;
+  display: inline-block;
+}
 
-/* small responsive adjustments */
+/* helpful small text */
+.kreeda-small { font-size: 12px; color: var(--kreeda-muted); }
+
+/* responsive adjustments */
 @media (max-width: 520px) {
-  :root {
-    --kreeda-card-width: 92%;
-    --kreeda-padding: 12px;
-  }
+  :root { --kreeda-card-width: 92%; --kreeda-padding: 12px; }
   .kreeda-card-face { min-height: 120px; }
-  .kreeda-media { max-height: 40vh; }
+  .kreeda-media-wrap { max-height: 40vh; }
 }
 
 @media (min-width: 521px) and (max-width: 840px) {
-  :root {
-    --kreeda-card-width: 360px;
-  }
+  :root { --kreeda-card-width: 360px; }
 }
 
-/* orientation handling */
+/* orientation small screens */
 @media (orientation: landscape) and (max-height: 420px) {
-  .kreeda-card {
-    max-width: 420px;
-  }
-  .kreeda-media {
-    max-height: 36vh;
-  }
+  .kreeda-card { max-width: 420px; }
+  .kreeda-media-wrap { max-height: 36vh; }
 }
 
 /* reduced motion respect */
-@media (prefers-reduced-motion: reduce) {
-  .kreeda-card-inner {
-    transition: none !important;
-  }
-}
-
-/* allow consumer overrides with a theme class */
-.kreeda-theme--muted {
-  --kreeda-primary: #2b8a3e;
-  --kreeda-surface: #fbfbfb;
-}
-
-/* utility small text */
-.kreeda-small { font-size: 12px; color: var(--kreeda-muted); }
+@media (prefers-reduced-motion: reduce) { .kreeda-card-inner { transition: none !important; } }

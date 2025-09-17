@@ -1,6 +1,6 @@
 # Kreeda
 
-A React card-deck library for sexual-wellness prompts (logic-first).
+Kreeda: a small React game library.
 
 [![Storybook](https://img.shields.io/badge/storybook-online-ff4785?logo=storybook)](https://ashishkirodian.github.io/kreeda/)
 
