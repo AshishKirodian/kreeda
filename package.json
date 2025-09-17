@@ -1,6 +1,6 @@
 {
   "name": "kreeda",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Kreeda: a small React game library",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
